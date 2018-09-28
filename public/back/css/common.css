@@ -129,3 +129,6 @@ ul {
   width: 48%;
   height: 400px;
 }
+.lt_content table thead {
+  text-align: center;
+}
