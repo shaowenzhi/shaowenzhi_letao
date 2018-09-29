@@ -1,6 +1,8 @@
 $(function () {
   var currentPage = 1;
   var pageSize = 5;
+  var currentId;
+  var isDelete;
   render();
   function render() {
     $.ajax({
@@ -12,7 +14,6 @@ $(function () {
       },
       dataType: "json",
       success: function (info) {
-        console.log(info);
         var htmlStr = template("tmp", info);
         $('tbody').html(htmlStr);
   
@@ -28,5 +29,42 @@ $(function () {
         });
       }
     });
-  }
+  };
+
+  //通过事件绑定给按钮绑定事件
+  $('tbody').on('click','.btn', function () {
+    $('#userModal').modal('show');
+    currentId = $(this).parent().data("id");
+    isDelete = $(this).hasClass('btn-danger') ? 0 : 1;
+  })
+
+  //禁用模态框点击事件
+  $('#submitBtn').on("click", function() {
+    console.log( currentId, isDelete );
+
+    // 发送ajax请求, 需要用户 id, 和 isDelete(将用户改成什么状态)
+    $.ajax({
+      type: "post",
+      url: "/user/updateUser",
+      data: {
+        id: currentId,
+        isDelete: isDelete,
+      },
+      dataType: "json",
+      success: function (info) {
+        console.log(info);
+        if (info.success) {
+          $('#userModal').modal('hide');
+          render();
+        }
+      
+      }
+    })
+
+  })
+
+
+
+
+
 })
